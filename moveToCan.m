@@ -1,4 +1,4 @@
-% HW 8 --> guessing position of each joint to get to rcan3
+% HW 8 Part A --> guessing position of each joint to get to rcan3
 % check example 3 in 09 live notebook & function packTrajGoal
 
 % connecting gazebo & matlab
@@ -78,6 +78,7 @@ gripperRotation = [-pi/2 -pi 0]; %  [Z Y X]radians
 tform = eul2tform(gripperRotation); % ie eul2tr call
 tform(1:3,4) = gripperTranslation'; % set translation in homogeneous transform
 
+show(UR5e,configSoln)
 
 % Finally, compute the IKs:
 [configSoln, solnInfo] = ik('tool0',tform,ikWeights,initialIKGuess)
@@ -90,7 +91,7 @@ UR5econfig = [configSoln(3)...
               configSoln(6)]
 
 % Let's use a packing function to appropriately fill names and positions:
-trajGoal = packTrajGoal(UR5econfig,trajGoal)
+trajGoal = packTrajGoal(UR5econfig,trajGoal) % packing function is having issues with data format :(
 
 % Send to the action server:
 sendGoal(trajAct,trajGoal)
