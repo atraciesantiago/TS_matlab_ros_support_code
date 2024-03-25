@@ -1,5 +1,8 @@
 % HW 8 Part B --> moving the arm like a crane machine to hover over rcan3
 
+rosshutdown
+rosinit('192.168.152.129')
+
 trajAct = rosactionclient('/pos_joint_traj_controller/follow_joint_trajectory','control_msgs/FollowJointTrajectory') 
 trajGoal = rosmessage(trajAct)
 
@@ -91,7 +94,7 @@ UR5econfig = [configSoln(3)...
               configSoln(6)]
 
 % Let's use a packing function to appropriately fill names and positions:
-trajGoal = packTrajGoal(UR5econfig,trajGoal) % packing function is having issues with data format :(
+trajGoal = packTrajGoal(UR5econfig,trajGoal)
 
 % Send to the action server:
 sendGoal(trajAct,trajGoal)
