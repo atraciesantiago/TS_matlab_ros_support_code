@@ -59,7 +59,7 @@ jointStateMsg.Name
 initialIKGuess(1) = jointStateMsg.Position(4); % update configuration in initial guess
 initialIKGuess(2) = jointStateMsg.Position(3);
 initialIKGuess(3) = jointStateMsg.Position(1);
-initialIKGuess(4) = jointStateMsg.Position(5);
+initialIKGuess(4) = jointStateMsg.Position(5) - 0.5; % elbow up configuration
 initialIKGuess(5) = jointStateMsg.Position(6);
 initialIKGuess(6) = jointStateMsg.Position(7);
 show(UR5e,initialIKGuess)
