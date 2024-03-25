@@ -67,9 +67,9 @@ show(UR5e,initialIKGuess)
 
 
 % Set End-Effector Pose
-gripperX = -0.01;
-gripperY = 0.56;
-gripperZ = 0.34;
+gripperX = -0.06;
+gripperY = 0.73;
+gripperZ = 0.15;
 
 gripperTranslation = [gripperX gripperY gripperZ];
 gripperRotation = [-pi/2 -pi 0]; %  [Z Y X]radians
@@ -78,10 +78,10 @@ gripperRotation = [-pi/2 -pi 0]; %  [Z Y X]radians
 tform = eul2tform(gripperRotation); % ie eul2tr call
 tform(1:3,4) = gripperTranslation'; % set translation in homogeneous transform
 
-show(UR5e,configSoln)
-
 % Finally, compute the IKs:
 [configSoln, solnInfo] = ik('tool0',tform,ikWeights,initialIKGuess)
+
+show(UR5e,configSoln)
 
 UR5econfig = [configSoln(3)... 
               configSoln(2)...
