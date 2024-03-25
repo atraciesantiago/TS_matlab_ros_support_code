@@ -37,7 +37,7 @@ ikWeights = [0.25 0.25 0.25 0.1 0.1 .1]; % configuration weights for IK solver [
 
 
 % Before proceeding, get the latest joint angles of the robot by calling receive (blocking function).
-jointStateMsg = receive(jointSub,3) % receive current robot configuration
+jointStateMsg = receive(jointSub,10) % receive current robot configuration
 
 
 % Let's set the numerical IK guess to the current configuration:
@@ -66,8 +66,8 @@ show(UR5e,initialIKGuess)
 
 
 % Set End-Effector Pose
-gripperX = -0.06;
-gripperY = 0.75;
+gripperX = -0.03;
+gripperY = 0.80;
 % maintain initial height
 gripperZ1 = 0.34;
 % lower height to rCan3

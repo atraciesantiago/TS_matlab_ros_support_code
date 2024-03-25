@@ -68,9 +68,9 @@ show(UR5e,initialIKGuess)
 
 
 % Set End-Effector Pose
-gripperX = -0.06;
+gripperX = -0.04;
 gripperY = 0.78;
-gripperZ = 0.15;
+gripperZ = 0.14;
 
 gripperTranslation = [gripperX gripperY gripperZ];
 gripperRotation = [-pi/2 -pi 0]; %  [Z Y X]radians
