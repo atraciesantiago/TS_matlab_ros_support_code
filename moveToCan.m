@@ -2,7 +2,8 @@
 % check example 3 in 09 live notebook & function packTrajGoal
 
 % connecting gazebo & matlab
-% rosinit('192.168.152.129')
+rosshutdown
+rosinit('192.168.152.129')
 
 trajAct = rosactionclient('/pos_joint_traj_controller/follow_joint_trajectory','control_msgs/FollowJointTrajectory') 
 trajGoal = rosmessage(trajAct)
@@ -68,7 +69,7 @@ show(UR5e,initialIKGuess)
 
 % Set End-Effector Pose
 gripperX = -0.06;
-gripperY = 0.73;
+gripperY = 0.78;
 gripperZ = 0.15;
 
 gripperTranslation = [gripperX gripperY gripperZ];
