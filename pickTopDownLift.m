@@ -71,7 +71,7 @@ gripperY = 0.80;
 % maintain initial height
 gripperZ1 = 0.34;
 % lower height to rCan3
-gripperZ2 = 0.15;
+gripperZ2 = 0.13;
 
 gripperTranslation1 = [gripperX gripperY gripperZ1];
 gripperTranslation2 = [gripperX gripperY gripperZ2];
@@ -98,40 +98,44 @@ UR5econfig = [configSoln(3)...
 trajGoal = packTrajGoal(UR5econfig,trajGoal)
 
 % Send to the action server:
-sendGoal(trajAct,trajGoal)
+if waitForServer(trajAct)
+    [move_result,move_state,move_status] = sendGoalAndWait(trajAct,trajGoal);
+else 
+    move_result = -1; move_state = 'failed'; move_status = 'could not find server';
+end
 
 % closing gripper around can
 grip_client = rosactionclient('/gripper_controller/follow_joint_trajectory','control_msgs/FollowJointTrajectory', 'DataFormat', 'struct');
 gripGoal = rosmessage(grip_client);
-gripPos = 0.8;
+gripPos = 0.5;
 gripGoal = packGripGoal(gripPos,gripGoal);
 
-sendGoal(grip_client,gripGoal)
+if waitForServer(grip_client)
+    [grip_result,grip_state,grip_status] = sendGoalAndWait(grip_client,gripGoal);
+else
+    grip_result = -1; grip_state = 'failed'; grip_status = 'could not find server';
+end
 
 % pick up can
-gripperX_1 = -0.03;
-gripperY_1 = 0.80;
-gripperZ_1 = 0.34;
+joint_state_sub = rossubscriber("/joint_states");
+ros_cur_jnt_state_msg = receive(joint_state_sub,1);
 
-gripperTranslation_1 = [gripperX_1 gripperY_1 gripperZ_1];
-gripperRotation_1 = [-pi/2 -pi 0]; %  [Z Y X]radians
+pick_traj_act_client = rosactionclient('/pos_joint_traj_controller/follow_joint_trajectory',...
+                                           'control_msgs/FollowJointTrajectory', ...
+                                           'DataFormat', 'struct');
+    
+% Create action goal message from client
+traj_goal = rosmessage(pick_traj_act_client);
 
+% "ready" configuration
+q = [0 0 pi/2 -pi/2 0 0];
 
-tform = eul2tform(gripperRotation_1); % ie eul2tr call
-tform(1:3,4) = gripperTranslation_1'; % set translation in homogeneous transform
-
-% Finally, compute the IKs:
-[configSoln, solnInfo] = ik('tool0',tform,ikWeights,initialIKGuess);
-
-UR5econfig = [configSoln(3)... 
-              configSoln(2)...
-              configSoln(1)...
-              configSoln(4)...
-              configSoln(5)...
-              configSoln(6)];
-
-% Let's use a packing function to appropriately fill names and positions:
-trajGoal = packTrajGoal(UR5econfig,trajGoal);
-
-% Send to the action server:
-sendGoal(trajAct,trajGoal)
+traj_goal = convert2ROSPointVec(q,ros_cur_jnt_state_msg.Name,1,1,traj_goal);
+    
+% Finally send ros trajectory with traj_steps
+if waitForServer(pick_traj_act_client)
+    disp('Connected to action server. Sending goal...')
+    [resultMsg,state,status] = sendGoalAndWait(pick_traj_act_client,traj_goal);
+else
+    resultMsg = -1; state = 'failed'; status = 'could not find server';
+end
