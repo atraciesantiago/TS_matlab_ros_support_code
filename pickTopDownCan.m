@@ -66,12 +66,12 @@ show(UR5e,initialIKGuess)
 
 
 % Set End-Effector Pose
-gripperX = -0.03;
+gripperX = -0.038;
 gripperY = 0.80;
 % maintain initial height
 gripperZ1 = 0.34;
 % lower height to rCan3
-gripperZ2 = 0.15;
+gripperZ2 = 0.13;
 
 gripperTranslation1 = [gripperX gripperY gripperZ1];
 gripperTranslation2 = [gripperX gripperY gripperZ2];
@@ -98,12 +98,20 @@ UR5econfig = [configSoln(3)...
 trajGoal = packTrajGoal(UR5econfig,trajGoal)
 
 % Send to the action server:
-sendGoal(trajAct,trajGoal)
+if waitForServer(trajAct)
+    [move_result,move_state,move_status] = sendGoalAndWait(trajAct,trajGoal);
+else 
+    move_result = -1; move_state = 'failed'; move_status = 'could not find server';
+end
 
 % closing gripper around can
 grip_client = rosactionclient('/gripper_controller/follow_joint_trajectory','control_msgs/FollowJointTrajectory', 'DataFormat', 'struct');
 gripGoal = rosmessage(grip_client);
-gripPos = 0.8;
+gripPos = 0.23;
 gripGoal = packGripGoal(gripPos,gripGoal);
 
-sendGoal(grip_client,gripGoal)
+if waitForServer(grip_client)
+    [grip_result,grip_state,grip_status] = sendGoalAndWait(grip_client,gripGoal);
+else
+    grip_result = -1; grip_state = 'failed'; grip_status = 'could not find server';
+end
