@@ -44,7 +44,6 @@ jointStateMsg = receive(jointSub,10) % receive current robot configuration
 initialIKGuess = homeConfiguration(UR5e)
 
 
-
 % One thing to be careful is to copy the correct order from jointStateMsg.Position to our structure initialIKGuess. 
 % To know the order, look at the names:
 jointStateMsg.Name
@@ -66,7 +65,7 @@ show(UR5e,initialIKGuess)
 
 
 % Set End-Effector Pose
-gripperX = -0.03;
+gripperX = -0.038;
 gripperY = 0.80;
 % maintain initial height
 gripperZ1 = 0.34;
@@ -77,10 +76,10 @@ gripperTranslation1 = [gripperX gripperY gripperZ1];
 gripperTranslation2 = [gripperX gripperY gripperZ2];
 gripperRotation = [-pi/2 -pi 0]; %  [Z Y X]radians
 
-
 tform = eul2tform(gripperRotation); % ie eul2tr call
 tform(1:3,4) = gripperTranslation1'; % set translation in homogeneous transform
 tform(1:3,4) = gripperTranslation2'; % set translation in homogeneous transform
+
 
 % Finally, compute the IKs:
 [configSoln, solnInfo] = ik('tool0',tform,ikWeights,initialIKGuess)
@@ -93,6 +92,7 @@ UR5econfig = [configSoln(3)...
               configSoln(4)...
               configSoln(5)...
               configSoln(6)]
+
 
 % Let's use a packing function to appropriately fill names and positions:
 trajGoal = packTrajGoal(UR5econfig,trajGoal)
@@ -107,7 +107,7 @@ end
 % closing gripper around can
 grip_client = rosactionclient('/gripper_controller/follow_joint_trajectory','control_msgs/FollowJointTrajectory', 'DataFormat', 'struct');
 gripGoal = rosmessage(grip_client);
-gripPos = 0.5;
+gripPos = 0.23;
 gripGoal = packGripGoal(gripPos,gripGoal);
 
 if waitForServer(grip_client)
@@ -116,7 +116,10 @@ else
     grip_result = -1; grip_state = 'failed'; grip_status = 'could not find server';
 end
 
-% pick up can
+% pause of 3 secs to allow gripper to close around can
+pause(3)
+
+% lift can
 joint_state_sub = rossubscriber("/joint_states");
 ros_cur_jnt_state_msg = receive(joint_state_sub,1);
 
