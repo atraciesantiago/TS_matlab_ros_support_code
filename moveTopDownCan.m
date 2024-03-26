@@ -66,12 +66,12 @@ show(UR5e,initialIKGuess)
 
 
 % Set End-Effector Pose
-gripperX = -0.03;
+gripperX = -0.038;
 gripperY = 0.80;
 % maintain initial height
 gripperZ1 = 0.34;
 % lower height to rCan3
-gripperZ2 = 0.15;
+gripperZ2 = 0.13;
 
 gripperTranslation1 = [gripperX gripperY gripperZ1];
 gripperTranslation2 = [gripperX gripperY gripperZ2];
