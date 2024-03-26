@@ -1,4 +1,4 @@
-% HW 8 Part C --> close gripper around can
+% HW 8 Part D --> pick up rCan3
 
 rosshutdown
 rosinit('192.168.152.129')
@@ -107,3 +107,14 @@ gripPos = 0.8;
 gripGoal = packGripGoal(gripPos,gripGoal);
 
 sendGoal(grip_client,gripGoal)
+
+% pick up can to "ready" configuration
+joint_state_sub = rossubscriber("/joint_states");
+ros_cur_jnt_state_msg = receive(joint_state_sub,10);
+pick_traj_act_client = rosactionclient('/pos_joint_traj_controller/follow_joint_trajectory',...
+                                          'control_msgs/FollowJointTrajectory', ...
+                                          'DataFormat', 'struct');
+traj_goal = rosmessage(pick_traj_act_client);
+q = [0 0 pi/2 -pi/2 0 0];
+traj_goal = convert2ROSPointVec(q,ros_cur_jnt_state_msg.Name,1,1,traj_goal);
+[resultMsg,state,status] = sendGoalAndWait(pick_traj_act_client,traj_goal);

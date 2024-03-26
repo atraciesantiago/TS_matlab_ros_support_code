@@ -1,4 +1,4 @@
-% HW 8 Part C --> close gripper around can
+% HW 8 Part D --> pick up rCan3
 
 rosshutdown
 rosinit('192.168.152.129')
@@ -107,3 +107,31 @@ gripPos = 0.8;
 gripGoal = packGripGoal(gripPos,gripGoal);
 
 sendGoal(grip_client,gripGoal)
+
+% pick up can
+gripperX_1 = -0.03;
+gripperY_1 = 0.80;
+gripperZ_1 = 0.34;
+
+gripperTranslation_1 = [gripperX_1 gripperY_1 gripperZ_1];
+gripperRotation_1 = [-pi/2 -pi 0]; %  [Z Y X]radians
+
+
+tform = eul2tform(gripperRotation_1); % ie eul2tr call
+tform(1:3,4) = gripperTranslation_1'; % set translation in homogeneous transform
+
+% Finally, compute the IKs:
+[configSoln, solnInfo] = ik('tool0',tform,ikWeights,initialIKGuess);
+
+UR5econfig = [configSoln(3)... 
+              configSoln(2)...
+              configSoln(1)...
+              configSoln(4)...
+              configSoln(5)...
+              configSoln(6)];
+
+% Let's use a packing function to appropriately fill names and positions:
+trajGoal = packTrajGoal(UR5econfig,trajGoal);
+
+% Send to the action server:
+sendGoal(trajAct,trajGoal)

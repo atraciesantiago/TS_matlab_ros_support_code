@@ -107,3 +107,5 @@ gripPos = 0.8;
 gripGoal = packGripGoal(gripPos,gripGoal);
 
 sendGoal(grip_client,gripGoal)
+
+% 
