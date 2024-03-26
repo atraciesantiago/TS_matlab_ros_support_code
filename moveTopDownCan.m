@@ -98,4 +98,8 @@ UR5econfig = [configSoln(3)...
 trajGoal = packTrajGoal(UR5econfig,trajGoal)
 
 % Send to the action server:
-sendGoal(trajAct,trajGoal)
+if waitForServer(trajAct)
+    [move_result,move_state,move_status] = sendGoalAndWait(trajAct,trajGoal);
+else 
+    move_result = -1; move_state = 'failed'; move_status = 'could not find server';
+end
