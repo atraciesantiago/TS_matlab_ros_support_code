@@ -43,6 +43,11 @@ if ~ret
     fprintf('Moving to bin...');
     ret = moveToBin(strategy,mat_R_T_M,place_pose);
 end
+%% Return to home
+if ~ret
+    ret = moveToQ('qr');
+end
+
 %% 03 Get Pose - gCan2 (laying down on table)
 disp('Getting goal...')
 type = 'manual'; % gazebo, ptcloud, cam, manual
@@ -69,6 +74,11 @@ if ~ret
     fprintf('Moving to bin...');
     ret = moveToBin(strategy,mat_R_T_M,place_pose);
 end
+%% Return to home
+if ~ret
+    ret = moveToQ('qr');
+end
+
 %% 03 Get Pose - gCan4 (in box)
 disp('Getting goal...')
 type = 'gazebo'; % gazebo, ptcloud, cam, manual
