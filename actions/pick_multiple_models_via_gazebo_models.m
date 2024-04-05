@@ -22,7 +22,7 @@ model_names = {'rCan3','yCan1','yCan3','gCan4','rCan2','gCan3','gCan1','rCan1','
 mod_sz = length(model_names);
 
 % Loop through them.
-r = rosrate(10);
+r = rosrate(1);
 for i=1:mod_sz
     nm = model_names{i};
     fprintf('Picking up model: %s \n',nm);
