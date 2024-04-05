@@ -17,7 +17,11 @@
     %% 03 Get Images
 
     % Save all the names of objects in world
+<<<<<<< HEAD
     obj_names = {'gCan1'};
+=======
+    obj_names = {'yCan1'};
+>>>>>>> f5b1823d53cd88f6ca677678d3f3ae61d425340c
     % obj_names = {%'rCan1',                
     %              'gCan1',...
     %              'yCan1',...

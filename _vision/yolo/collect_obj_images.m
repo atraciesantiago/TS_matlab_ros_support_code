@@ -144,7 +144,11 @@ function myImgStruct = collect_obj_images(model_name)
     %% Save img struct to desired file name path
 
     % Create file name associated with model
+<<<<<<< HEAD
     outputFileName = set_inputObj_FileName(model_name);
+=======
+    outputFileName = set_inputObj_FileName(model_name(1:end-1));
+>>>>>>> f5b1823d53cd88f6ca677678d3f3ae61d425340c
 
     % Save in data folder
     fullPath = fullfile('data', outputFileName); % Creates a full file path   

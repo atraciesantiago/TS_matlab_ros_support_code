@@ -43,4 +43,7 @@ function [res,state] = doGrip(type)
         disp('First try failed... Trying again...');
         [res,state,status] = sendGoalAndWait(grip_action_client,grip_goal);
     end    
+
+    %% Clear grip_action_client: checking to see if this minimizes ROS network connection errors
+    clear grip_action_client;
 end

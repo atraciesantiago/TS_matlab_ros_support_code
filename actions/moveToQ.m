@@ -55,5 +55,8 @@ function [res,q] = moveToQ(config)
     
     % Extract result
     res = res.ErrorCode;
+
+    %% Clear pick_traj_act_client: checking to see if this minimizes ROS network connection errors
+    clear pick_traj_act_client;    
     
 end
