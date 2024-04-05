@@ -18,9 +18,12 @@ function outStruct = merge_img_structures
         loadedData{i} = load(filePath);
     end    
 
-    % Initialize the new structure
-    outStruct = struct();
-        
+    % Extract core part of file name using regexp
+    pattern = '^(.+?)_\d{4}\.jpg$';
+    
+    % Timestamp for folder
+    formattedDateTimeStr = datetime('now', 'Format', 'yyyyMMdd_HHmmss');
+
     ctr = 1;
     field_names = cell(1,file_len);
     
@@ -28,13 +31,38 @@ function outStruct = merge_img_structures
         str = loadedData{i};
         field_names{i} = fieldnames(str.myImgStruct); % Hold cell array of field names
 
+        %% Create folder and cd into folder for set of images    
+        tokens = regexp(files(i).name, pattern, 'tokens');     
+        outputFileName = append(tokens,"_", char(formattedDateTimeStr)); 
+        fullPath = fullfile(outputFileName); % Creates a full file path   
+        if ~exist('data', 'dir')                     % If the folder does not exist, create it 
+            mkdir('data');
+            cd('./data');
+            if ~exist(fullPath,'dir')
+                mkdir(fullPath);
+                cd(fullPath);
+            end
+
+        else
+            cd('./data')
+            if ~exist(fullPath,'dir')
+                mkdir(fullPath);
+                cd(fullPath);
+            else
+                cd(fullPath);
+            end
+        end
+
+        %% Save images
+
         % Use field names to set outStruct to the equivalent images
         for j = 1:length(field_names{i})
             field = append('img',num2str(ctr));
 
             % Copy the image over
             entry = field_names{i}{j};
-            outStruct.(field) = str.myImgStruct.(entry);
+            imwrite(str.myImgStruct.(entry), field);
+            outStruct.(field) = ;
 
             % Increase counter
             ctr = ctr + 1;
@@ -44,17 +72,14 @@ function outStruct = merge_img_structures
     %% Save struct to file
     
     % Add timestamp
-    formattedDateTimeStr = datetime('now', 'Format', 'yyyyMMdd_HHmmss');
-    outputFileName = append('yoloTrainingData',"_", char(formattedDateTimeStr),".mat"); 
-
-    % Save in merge folder
+    outputFileName = append(tokens,"_", char(formattedDateTimeStr)); 
     fullPath = fullfile('merge', outputFileName); % Creates a full file path   
     if ~exist('merge', 'dir')                     % If the folder does not exist, create it 
         mkdir('merge');
     end
 
-    % Final name:   
-    save(fullPath,'outStruct');
+
+   
     
     fprintf('File saved as %s\n', 'yoloTrainingData.mat');
 end
