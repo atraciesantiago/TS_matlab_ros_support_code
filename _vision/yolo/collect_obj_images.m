@@ -35,7 +35,7 @@ function myImgStruct = collect_obj_images(model_name)
     optns("toolFlag")            = 0;     % Include rigidly attached robotiq fingers
     optns("traj_steps")          = 1;     % Num of traj steps
     optns("z_offset")            = 0.09;  % Vertical offset for top-down approach
-    optns("traj_duration")       = 2;     % Traj duration (secs)   
+    optns("traj_duration")       = 5;     % Traj duration (secs)   
     
     optns("frameAdjustmentFlag") = 1;
     optns("toolAdjustmentFlag")  = 1;
@@ -144,11 +144,7 @@ function myImgStruct = collect_obj_images(model_name)
     %% Save img struct to desired file name path
 
     % Create file name associated with model
-<<<<<<< HEAD
-    outputFileName = set_inputObj_FileName(model_name);
-=======
     outputFileName = set_inputObj_FileName(model_name(1:end-1));
->>>>>>> f5b1823d53cd88f6ca677678d3f3ae61d425340c
 
     % Save in data folder
     fullPath = fullfile('data', outputFileName); % Creates a full file path   
